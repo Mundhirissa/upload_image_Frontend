@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Data</title>
+    <style>
+        table,thead,th,td{
+            border: solid 1px black;
+        }
+    </style>
+</head>
+<body>
+
+<button><a href="imageupload.html">Upload image in the databse</a></button>
+
+    <h1>Image Data</h1>
+    <table id="imageTable" style="width: 70%;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Image</th>
+                <!-- Add more columns here if needed -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- The data will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        fetch('http://localhost:8080/api/getAllImages')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector('#imageTable tbody');
+
+                if (data.length > 0) {
+                    data.forEach(image => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${image.id}</td>
+                            <td>${image.name}</td>
+                            <td>${image.type}</td>
+                            <td><img src="data:${image.type};base64,${image.data}" width="100px" height="70px" alt="Image"></td>
+                            <!-- Add more columns here if needed -->
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    const emptyRow = document.createElement('tr');
+                    emptyRow.innerHTML = '<td colspan="4">No images found</td>';
+                    tableBody.appendChild(emptyRow);
+                }
+            })
+            .catch(error => console.error('Error fetching image data:', error));
+    </script>
+</body>
+</html>
